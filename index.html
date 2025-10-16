@@ -18,17 +18,6 @@
             color: #6f42c1;
         }
 
-        .flight-number {
-            background-color: #d0bfff;
-            color: #3c096c;
-            font-size: 1.4em;
-            font-weight: bold;
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 15px;
-            margin: 10px auto 30px;
-        }
-
         .timer-container {
             margin: 30px auto;
             padding: 20px;
@@ -80,7 +69,38 @@
             }
         }
 
-        /* קוד טביעות רגליים מוסתר
+        .flight-reveal {
+            margin: 20px auto 30px;
+        }
+
+        .flight-hint {
+            font-size: 1.2em;
+            color: #5a189a;
+            margin-bottom: 10px;
+        }
+
+        .plane {
+            font-size: 3em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .plane:hover {
+            transform: scale(1.3) rotate(10deg);
+        }
+
+        .flight-number {
+            background-color: #d0bfff;
+            color: #3c096c;
+            font-size: 1.4em;
+            font-weight: bold;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+
+        /*
         .paw {
             position: fixed;
             font-size: 80px;
@@ -101,11 +121,15 @@
 
     <h1>🦡 מישהו הולך לקבל ביס באף 🦡</h1>
 
-    <div class="flight-number">✈️ מספר טיסה: H40235</div>
-
     <div class="timer-container">
         <div class="label">וגם בטוסיק</div>
         <div class="timer" id="countdown"></div>
+    </div>
+
+    <div class="flight-reveal">
+        <div class="flight-hint">✈️ לחץ על המטוס כדי לראות את מספר הטיסה</div>
+        <div class="plane" onclick="revealFlight()">✈️</div>
+        <div class="flight-number" id="flightNumber" style="display: none;">✈️ מספר טיסה: H40235</div>
     </div>
 
     <div class="middle-image">
@@ -148,6 +172,10 @@
                 `${upDays} ימים, ${upHours} שעות, ${upMinutes} דקות, ${upSeconds} שניות`;
         }
 
+        function revealFlight() {
+            document.getElementById("flightNumber").style.display = "inline-block";
+        }
+
         setInterval(updateClocks, 1000);
         updateClocks();
 
@@ -165,7 +193,7 @@
 
         document.addEventListener('DOMContentLoaded', createFallingBadgers);
 
-        /* hidden footprints code
+        /*
         function leavePaw(x, y) {
             const paw = document.createElement('div');
             paw.className = 'paw';
