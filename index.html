@@ -127,7 +127,7 @@
     </div>
 
     <div class="flight-reveal">
-        <div class="flight-hint">✈️ לחץ על המטוס כדי לראות את מספר הטיסה</div>
+        <div class="flight-hint">✈️ תלחץ על המטוס כדי לראות את מספר הטיסה</div>
         <div class="plane" onclick="revealFlight()">✈️</div>
         <div class="flight-number" id="flightNumber" style="display: none;">✈️ מספר טיסה: H40235</div>
     </div>
@@ -173,7 +173,12 @@
         }
 
         function revealFlight() {
-            document.getElementById("flightNumber").style.display = "inline-block";
+            const el = document.getElementById("flightNumber");
+            if (el.style.display === "none" || el.style.display === "") {
+                el.style.display = "inline-block";
+            } else {
+                el.style.display = "none";
+            }
         }
 
         setInterval(updateClocks, 1000);
