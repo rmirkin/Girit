@@ -38,7 +38,17 @@
             color: #5a189a;
         }
 
-        /* סגנון לגיריות */
+        .middle-image {
+            margin: 40px 0;
+        }
+
+        .middle-image img {
+            width: 300px;
+            max-width: 80%;
+            border-radius: 30px;
+            box-shadow: 0 0 20px #b197fc;
+        }
+
         .falling-badger {
             position: fixed;
             top: -50px;
@@ -69,44 +79,56 @@
         <div class="timer" id="countdown"></div>
     </div>
 
-    <div class="timer-container">
+    <!-- תמונה מצחיקה בין השעונים -->
+    <div class="middle-image">
+        <img src="IMG_6867.jpg" alt="תמונה מצחיקה">
+    </div>
+
+    <div class="timer-container" style="margin-top: 60px;">
         <div class="label">הפעם האחרונה שגירית מצויה קטנה קיבלה ביס באף</div>
         <div class="timer" id="countup"></div>
     </div>
 
     <script>
-        // תאריכים
         const landingDate = new Date("2025-10-19T12:30:00");
         const lastMeeting = new Date("2025-09-01T18:20:00");
+        let resetCountup = false;
 
         function updateClocks() {
             const now = new Date();
 
             // ספירה לאחור
             let diff = landingDate - now;
-            if (diff < 0) diff = 0;
+            if (diff < 0) {
+                diff = 0;
+                resetCountup = true;
+            }
+
             const cdDays = Math.floor(diff / (1000 * 60 * 60 * 24));
             const cdHours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const cdMinutes = Math.floor((diff / (1000 * 60)) % 60);
             const cdSeconds = Math.floor((diff / 1000) % 60);
+
             document.getElementById("countdown").textContent = 
                 `${cdDays} ימים, ${cdHours} שעות, ${cdMinutes} דקות, ${cdSeconds} שניות`;
 
-            // ספירה קדימה
-            let upDiff = now - lastMeeting;
+            // ספירה קדימה (מאז הפגישה האחרונה או מהנחיתה)
+            let upDiff = resetCountup ? now - landingDate : now - lastMeeting;
             if (upDiff < 0) upDiff = 0;
+
             const upDays = Math.floor(upDiff / (1000 * 60 * 60 * 24));
             const upHours = Math.floor((upDiff / (1000 * 60 * 60)) % 24);
             const upMinutes = Math.floor((upDiff / (1000 * 60)) % 60);
             const upSeconds = Math.floor((upDiff / 1000) % 60);
-            document.getElementById("countup").textContent = 
+
+            document.getElementById("countup").textContent =
                 `${upDays} ימים, ${upHours} שעות, ${upMinutes} דקות, ${upSeconds} שניות`;
         }
 
         setInterval(updateClocks, 1000);
         updateClocks();
 
-        // יצירת גיריות נופלות
+        // גיריות נופלות
         function createFallingBadgers() {
             const count = 20;
             for (let i = 0; i < count; i++) {
