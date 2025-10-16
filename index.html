@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>ספירה לאחור לאיחוד</title>
+    <style>
+        body {
+            direction: rtl;
+            text-align: center;
+            background-color: #fff8f0;
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #d63384;
+        }
+
+        .timer-container {
+            margin: 30px auto;
+            padding: 20px;
+            border: 3px dashed #d63384;
+            border-radius: 20px;
+            max-width: 500px;
+            background-color: #ffe3ec;
+        }
+
+        .label {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #6f42c1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>💖 איחוד מרגש בפתח 💖</h1>
+
+    <div class="timer-container">
+        <div class="label">⏳ שעון עד לאיחוד</div>
+        <div class="timer" id="countdown"></div>
+    </div>
+
+    <div class="timer-container">
+        <div class="label">⌛ שעון מאז הפעם האחרונה שהתראינו</div>
+        <div class="timer" id="countup"></div>
+    </div>
+
+    <script>
+        // תאריך הנחיתה
+        const landingDate = new Date("2025-10-19T12:30:00");
+        // תאריך הפגישה האחרונה
+        const lastMeeting = new Date("2025-09-01T18:20:00");
+
+        function updateClocks() {
+            const now = new Date();
+
+            // ספירה לאחור
+            let diff = landingDate - now;
+            if (diff < 0) diff = 0;
+            const cdDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const cdHours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const cdMinutes = Math.floor((diff / (1000 * 60)) % 60);
+            const cdSeconds = Math.floor((diff / 1000) % 60);
+            document.getElementById("countdown").textContent = 
+                `${cdDays} ימים, ${cdHours} שעות, ${cdMinutes} דקות, ${cdSeconds} שניות`;
+
+            // ספירה קדימה
+            let upDiff = now - lastMeeting;
+            if (upDiff < 0) upDiff = 0;
+            const upDays = Math.floor(upDiff / (1000 * 60 * 60 * 24));
+            const upHours = Math.floor((upDiff / (1000 * 60 * 60)) % 24);
+            const upMinutes = Math.floor((upDiff / (1000 * 60)) % 60);
+            const upSeconds = Math.floor((upDiff / 1000) % 60);
+            document.getElementById("countup").textContent = 
+                `${upDays} ימים, ${upHours} שעות, ${upMinutes} דקות, ${upSeconds} שניות`;
+        }
+
+        setInterval(updateClocks, 1000);
+        updateClocks();
+    </script>
+</body>
+</html>
