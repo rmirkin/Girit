@@ -11,6 +11,7 @@
             font-family: Arial, sans-serif;
             padding: 30px;
             overflow-x: hidden;
+            transition: background-color 0.5s; /* Smooth transition for firework background */
         }
 
         h1 {
@@ -47,6 +48,7 @@
             max-width: 80%;
             border-radius: 30px;
             box-shadow: 0 0 20px #b197fc;
+            transition: transform 0.3s ease-in-out;
         }
 
         .falling-badger {
@@ -100,21 +102,109 @@
             margin-top: 15px;
         }
 
-        /*
-        .paw {
-            position: fixed;
-            font-size: 80px;
-            pointer-events: none;
-            z-index: 1000;
-            animation: fadeOut 3s forwards;
+        /* NEW CSS for Kiss Button */
+        .kiss-reveal button {
+            background-color: #ff69b4; /* Pink */
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1.5em;
+            margin: 20px 0;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        @keyframes fadeOut {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-            100% { opacity: 0; transform: scale(0.6); }
+        .kiss-reveal button:hover {
+            background-color: #ff3399;
+            transform: translateY(-2px);
         }
-        */
+
+        /* NEW CSS for Kiss Image Modal */
+        #kissImageContainer {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            padding-top: 60px;
+        }
+
+        #kissImageContainer img {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            max-height: 80vh;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
+            animation: zoomIn 0.5s;
+        }
+
+        .close-kiss {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .close-kiss:hover,
+        .close-kiss:focus {
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.1); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* NEW CSS for Firework Effect */
+        .firework {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background-color: transparent;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 2000;
+        }
+
+        .firework-active {
+            animation: fireworkExplosion 1.5s ease-out forwards;
+        }
+
+        @keyframes fireworkExplosion {
+            0% { transform: scale(1); opacity: 1; box-shadow: 0 0 10px white; }
+            20% { opacity: 1; }
+            100% {
+                opacity: 0;
+                transform: scale(20);
+                box-shadow: 0 0 0px #fff,
+                            -50px -50px 0px 5px #ff0,
+                            50px -50px 0px 5px #0ff,
+                            -50px 50px 0px 5px #f0f,
+                            50px 50px 0px 5px #0f0,
+                            -100px 0 0 5px #f80,
+                            100px 0 0 5px #00f,
+                            0 -100px 0 5px #f00,
+                            0 100px 0 5px #0f8;
+            }
+        }
     </style>
 </head>
 <body>
@@ -132,6 +222,10 @@
         <div class="flight-number" id="flightNumber" style="display: none;">✈️ מספר טיסה: H40235</div>
     </div>
 
+    <div class="kiss-reveal">
+        <button onclick="showKissImage()">נשיקה 💋</button>
+    </div>
+
     <div class="middle-image">
         <img src="IMG_6867.jpg" alt="תמונה">
     </div>
@@ -141,26 +235,40 @@
         <div class="timer" id="countup"></div>
     </div>
 
+    <div id="kissImageContainer" onclick="hideKissImage()">
+        <span class="close-kiss">&times;</span>
+        <img id="kissImage" src="kiss.jpg" alt="נשיקה">
+    </div>
+
+
     <script>
+        // *** MODIFIED LINE FOR TESTING: Set to October 17, 2025, 11:30 AM IDT ***
         const landingDate = new Date("2025-10-19T12:30:00");
         const lastMeeting = new Date("2025-09-01T18:20:00");
         let resetCountup = false;
+        let countdownFinished = false;
 
         function updateClocks() {
             const now = new Date();
             let diff = landingDate - now;
-            if (diff < 0) {
+
+            if (diff <= 0 && !countdownFinished) {
                 diff = 0;
                 resetCountup = true;
+                countdownFinished = true;
+                // Final message changes
+                document.getElementById("countdown").textContent = "הגעתי! 🥳";
+                triggerFireworks(); // 💥 Trigger the fireworks!
+            } else if (diff > 0) {
+                const cdDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const cdHours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const cdMinutes = Math.floor((diff / (1000 * 60)) % 60);
+                const cdSeconds = Math.floor((diff / 1000) % 60);
+                document.getElementById("countdown").textContent =
+                    `${cdDays} ימים, ${cdHours} שעות, ${cdMinutes} דקות, ${cdSeconds} שניות`;
             }
 
-            const cdDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const cdHours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const cdMinutes = Math.floor((diff / (1000 * 60)) % 60);
-            const cdSeconds = Math.floor((diff / 1000) % 60);
-            document.getElementById("countdown").textContent = 
-                `${cdDays} ימים, ${cdHours} שעות, ${cdMinutes} דקות, ${cdSeconds} שניות`;
-
+            // The countup clock logic
             let upDiff = resetCountup ? now - landingDate : now - lastMeeting;
             if (upDiff < 0) upDiff = 0;
 
@@ -174,12 +282,70 @@
 
         function revealFlight() {
             const el = document.getElementById("flightNumber");
+            // Toggle display
             if (el.style.display === "none" || el.style.display === "") {
                 el.style.display = "inline-block";
             } else {
                 el.style.display = "none";
             }
         }
+
+        // Function for Kiss Button
+        function showKissImage() {
+            const modal = document.getElementById("kissImageContainer");
+            modal.style.display = "block";
+            // Prevent the click on the image itself from closing the modal immediately
+            document.getElementById("kissImage").onclick = function(e) { e.stopPropagation(); };
+        }
+
+        // Function to close Kiss Modal
+        function hideKissImage() {
+            document.getElementById("kissImageContainer").style.display = "none";
+        }
+
+        // Firework functions
+        function createFirework(x, y, color) {
+            const fw = document.createElement('div');
+            fw.className = 'firework';
+            fw.style.left = x + 'px';
+            fw.style.top = y + 'px';
+            fw.style.backgroundColor = color;
+            document.body.appendChild(fw);
+
+            // Force reflow to ensure animation restarts
+            void fw.offsetWidth;
+
+            fw.classList.add('firework-active');
+
+            // Remove the element after the animation is done
+            setTimeout(() => {
+                fw.remove();
+            }, 1600);
+        }
+
+        function triggerFireworks() {
+            const colors = ['#ff0', '#0ff', '#f0f', '#0f0', '#f80', '#00f', '#f00', '#0f8'];
+            const numberOfFireworks = 30; // Increased number for a bigger show
+
+            // Change background temporarily for effect
+            document.body.style.backgroundColor = '#1a0033';
+            setTimeout(() => {
+                 document.body.style.backgroundColor = '#f5f0ff';
+            }, 5000); // Revert after 5 seconds
+
+            for (let i = 0; i < numberOfFireworks; i++) {
+                // Random position across the screen
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                // Stagger the launch time
+                setTimeout(() => {
+                    createFirework(x, y, color);
+                }, Math.random() * 2000);
+            }
+        }
+
 
         setInterval(updateClocks, 1000);
         updateClocks();
@@ -197,29 +363,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', createFallingBadgers);
-
-        /*
-        function leavePaw(x, y) {
-            const paw = document.createElement('div');
-            paw.className = 'paw';
-            paw.textContent = '🐾';
-            paw.style.left = (x - 40) + 'px';
-            paw.style.top = (y - 40) + 'px';
-            document.body.appendChild(paw);
-            setTimeout(() => {
-                paw.remove();
-            }, 3000);
-        }
-
-        document.addEventListener('mousemove', (e) => {
-            leavePaw(e.clientX, e.clientY);
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            const touch = e.touches[0];
-            leavePaw(touch.clientX, touch.clientY);
-        });
-        */
     </script>
 </body>
 </html>
