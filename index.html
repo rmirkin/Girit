@@ -221,9 +221,9 @@
     </div>
 
     <div class="flight-reveal">
-        <div class="flight-hint">✈️ תלחץ על המטוס כדי לראות את מספר הטיסה</div>
+        <div class="flight-hint">✈️ מספר הטיסה</div>
         <div class="plane" onclick="revealFlight()">✈️</div>
-        <div class="flight-number" id="flightNumber" style="display: none;">✈️ מספר טיסה: H40235</div>
+        <div class="flight-number" id="flightNumber" style="display: none;">✈️ מספר טיסה: W4 6736</div>
     </div>
 
     <div class="kiss-reveal">
@@ -279,7 +279,7 @@ function updateClocks() {
 
     const percentEl = document.getElementById("countdownPercent");
     if (percentEl) {
-        percentEl.textContent = "עברו " + cdPercentage.toFixed(1) + "%";
+        percentEl.textContent = "עברנו " + cdPercentage.toFixed(1) + "%";
     }
 
     let upDiff = resetCountup ? now - landingDate : now - lastMeeting;
