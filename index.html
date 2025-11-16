@@ -11,7 +11,7 @@
             font-family: Arial, sans-serif;
             padding: 30px;
             overflow-x: hidden;
-            transition: background-color 0.5s; /* Smooth transition for firework background */
+            transition: background-color 0.5s;
         }
 
         h1 {
@@ -102,9 +102,8 @@
             margin-top: 15px;
         }
 
-        /* NEW CSS for Kiss Button */
         .kiss-reveal button {
-            background-color: #ff69b4; /* Pink */
+            background-color: #ff69b4;
             color: white;
             border: none;
             padding: 15px 30px;
@@ -124,7 +123,6 @@
             transform: translateY(-2px);
         }
 
-        /* NEW CSS for Kiss Image Modal */
         #kissImageContainer {
             display: none;
             position: fixed;
@@ -171,7 +169,6 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* NEW CSS for Firework Effect */
         .firework {
             position: fixed;
             top: 50%;
@@ -240,129 +237,129 @@
         <img id="kissImage" src="kiss.jpg" alt="נשיקה">
     </div>
 
+<script>
+const landingDate = new Date("2025-12-19T12:30:00");
+const lastMeeting = new Date("2025-11-02T09:00:00");
+let resetCountup = false;
+let countdownFinished = false;
 
-    <script>
-        // *** MODIFIED LINE FOR TESTING: Set to October 17, 2025, 11:30 AM IDT ***
-        const landingDate = new Date("2025-12-19T12:30:00");
-        const lastMeeting = new Date("2025-11-02T09:00:00");
-        let resetCountup = false;
-        let countdownFinished = false;
+function updateClocks() {
+    const now = new Date();
+    let diff = landingDate - now;
 
-        function updateClocks() {
-            const now = new Date();
-            let diff = landingDate - now;
+    let cdPercentage = 0;
 
-            if (diff <= 0 && !countdownFinished) {
-                diff = 0;
-                resetCountup = true;
-                countdownFinished = true;
-                // Final message changes
-                document.getElementById("countdown").textContent = "הגעתי! 🥳";
-                triggerFireworks(); // 💥 Trigger the fireworks!
-            } else if (diff > 0) {
-                const cdDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const cdHours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const cdMinutes = Math.floor((diff / (1000 * 60)) % 60);
-                const cdSeconds = Math.floor((diff / 1000) % 60);
-                document.getElementById("countdown").textContent =
-                    `${cdDays} ימים, ${cdHours} שעות, ${cdMinutes} דקות, ${cdSeconds} שניות`;
-            }
+    if (diff <= 0 && !countdownFinished) {
+        diff = 0;
+        resetCountup = true;
+        countdownFinished = true;
+        document.getElementById("countdown").textContent = "הגעתי! 🥳";
+        triggerFireworks();
+        cdPercentage = 100;
+    } else if (diff > 0) {
+        const totalTime = landingDate - lastMeeting;
+        const elapsed = now - lastMeeting;
+        cdPercentage = Math.min(100, Math.max(0, (elapsed / totalTime) * 100));
 
-            // The countup clock logic
-            let upDiff = resetCountup ? now - landingDate : now - lastMeeting;
-            if (upDiff < 0) upDiff = 0;
+        const cdDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const cdHours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const cdMinutes = Math.floor((diff / (1000 * 60)) % 60);
+        const cdSeconds = Math.floor((diff / 1000) % 60);
 
-            const upDays = Math.floor(upDiff / (1000 * 60 * 60 * 24));
-            const upHours = Math.floor((upDiff / (1000 * 60 * 60)) % 24);
-            const upMinutes = Math.floor((upDiff / (1000 * 60)) % 60);
-            const upSeconds = Math.floor((upDiff / 1000) % 60);
-            document.getElementById("countup").textContent =
-                `${upDays} ימים, ${upHours} שעות, ${upMinutes} דקות, ${upSeconds} שניות`;
-        }
+        document.getElementById("countdown").textContent =
+            cdDays + " ימים, " + cdHours + " שעות, " + cdMinutes + " דקות, " + cdSeconds + " שניות" +
+            " (" + cdPercentage.toFixed(1) + "% עבר)";
+    }
 
-        function revealFlight() {
-            const el = document.getElementById("flightNumber");
-            // Toggle display
-            if (el.style.display === "none" || el.style.display === "") {
-                el.style.display = "inline-block";
-            } else {
-                el.style.display = "none";
-            }
-        }
+    let upDiff = resetCountup ? now - landingDate : now - lastMeeting;
+    if (upDiff < 0) upDiff = 0;
 
-        // Function for Kiss Button
-        function showKissImage() {
-            const modal = document.getElementById("kissImageContainer");
-            modal.style.display = "block";
-            // Prevent the click on the image itself from closing the modal immediately
-            document.getElementById("kissImage").onclick = function(e) { e.stopPropagation(); };
-        }
+    const upTotal = resetCountup ? landingDate - lastMeeting : now - lastMeeting;
+    const upPercentage = Math.min(100, Math.max(0, (upDiff / upTotal) * 100));
 
-        // Function to close Kiss Modal
-        function hideKissImage() {
-            document.getElementById("kissImageContainer").style.display = "none";
-        }
+    const upDays = Math.floor(upDiff / (1000 * 60 * 60 * 24));
+    const upHours = Math.floor((upDiff / (1000 * 60 * 60)) % 24);
+    const upMinutes = Math.floor((upDiff / (1000 * 60)) % 60);
+    const upSeconds = Math.floor((upDiff / 1000) % 60);
 
-        // Firework functions
-        function createFirework(x, y, color) {
-            const fw = document.createElement('div');
-            fw.className = 'firework';
-            fw.style.left = x + 'px';
-            fw.style.top = y + 'px';
-            fw.style.backgroundColor = color;
-            document.body.appendChild(fw);
+    document.getElementById("countup").textContent =
+        upDays + " ימים, " + upHours + " שעות, " + upMinutes + " דקות, " + upSeconds + " שניות" +
+        " (" + upPercentage.toFixed(1) + "% עבר)";
+}
 
-            // Force reflow to ensure animation restarts
-            void fw.offsetWidth;
+function revealFlight() {
+    const el = document.getElementById("flightNumber");
+    if (el.style.display === "none" || el.style.display === "") {
+        el.style.display = "inline-block";
+    } else {
+        el.style.display = "none";
+    }
+}
 
-            fw.classList.add('firework-active');
+function showKissImage() {
+    const modal = document.getElementById("kissImageContainer");
+    modal.style.display = "block";
+    document.getElementById("kissImage").onclick = function(e) { e.stopPropagation(); };
+}
 
-            // Remove the element after the animation is done
-            setTimeout(() => {
-                fw.remove();
-            }, 1600);
-        }
+function hideKissImage() {
+    document.getElementById("kissImageContainer").style.display = "none";
+}
 
-        function triggerFireworks() {
-            const colors = ['#ff0', '#0ff', '#f0f', '#0f0', '#f80', '#00f', '#f00', '#0f8'];
-            const numberOfFireworks = 30; // Increased number for a bigger show
+function createFirework(x, y, color) {
+    const fw = document.createElement('div');
+    fw.className = 'firework';
+    fw.style.left = x + 'px';
+    fw.style.top = y + 'px';
+    fw.style.backgroundColor = color;
+    document.body.appendChild(fw);
 
-            // Change background temporarily for effect
-            document.body.style.backgroundColor = '#1a0033';
-            setTimeout(() => {
-                 document.body.style.backgroundColor = '#f5f0ff';
-            }, 5000); // Revert after 5 seconds
+    void fw.offsetWidth;
 
-            for (let i = 0; i < numberOfFireworks; i++) {
-                // Random position across the screen
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
-                const color = colors[Math.floor(Math.random() * colors.length)];
+    fw.classList.add('firework-active');
 
-                // Stagger the launch time
-                setTimeout(() => {
-                    createFirework(x, y, color);
-                }, Math.random() * 2000);
-            }
-        }
+    setTimeout(() => {
+        fw.remove();
+    }, 1600);
+}
 
+function triggerFireworks() {
+    const colors = ['#ff0', '#0ff', '#f0f', '#0f0', '#f80', '#00f', '#f00', '#0f8'];
+    const numberOfFireworks = 30;
 
-        setInterval(updateClocks, 1000);
-        updateClocks();
+    document.body.style.backgroundColor = '#1a0033';
+    setTimeout(() => {
+        document.body.style.backgroundColor = '#f5f0ff';
+    }, 5000);
 
-        function createFallingBadgers() {
-            const count = 20;
-            for (let i = 0; i < count; i++) {
-                const badger = document.createElement('div');
-                badger.className = 'falling-badger';
-                badger.style.left = Math.random() * 100 + 'vw';
-                badger.style.animationDelay = (Math.random() * 8) + 's';
-                badger.textContent = '🦡';
-                document.body.appendChild(badger);
-            }
-        }
+    for (let i = 0; i < numberOfFireworks; i++) {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+        const color = colors[Math.floor(Math.random() * colors.length)];
 
-        document.addEventListener('DOMContentLoaded', createFallingBadgers);
-    </script>
+        setTimeout(() => {
+            createFirework(x, y, color);
+        }, Math.random() * 2000);
+    }
+}
+
+setInterval(updateClocks, 1000);
+updateClocks();
+
+function createFallingBadgers() {
+    const count = 20;
+    for (let i = 0; i < count; i++) {
+        const badger = document.createElement('div');
+        badger.className = 'falling-badger';
+        badger.style.left = Math.random() * 100 + 'vw';
+        badger.style.animationDelay = (Math.random() * 8) + 's';
+        badger.textContent = '🦡';
+        document.body.appendChild(badger);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', createFallingBadgers);
+</script>
+
 </body>
 </html>
