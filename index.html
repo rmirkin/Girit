@@ -208,6 +208,35 @@
                             0 100px 0 5px #0f8;
             }
         }
+
+        .progress-wrapper {
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 500px;
+            height: 25px;
+            border-radius: 15px;
+            background-color: #d0bfff;
+            margin: 0 auto;
+            overflow: hidden;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #5a189a, #ff69b4);
+            border-radius: 15px;
+            transition: width 0.4s ease-out;
+        }
+
+        .progress-text {
+            margin-top: 8px;
+            font-size: 1.1em;
+            color: #3c096c;
+        }
     </style>
 </head>
 <body>
@@ -239,6 +268,16 @@
         <div class="timer" id="countup"></div>
     </div>
 
+    <div class="timer-container" style="margin-top: 40px;">
+        <div class="label">כמה כבר עברנו מתקופת החילופים</div>
+        <div class="progress-wrapper">
+            <div class="progress-bar">
+                <div class="progress-fill" id="swapsProgressFill"></div>
+            </div>
+            <div class="progress-text" id="swapsProgressText"></div>
+        </div>
+    </div>
+
     <div id="kissImageContainer" onclick="hideKissImage()">
         <span class="close-kiss">&times;</span>
         <img id="kissImage" src="kiss.jpg" alt="נשיקה">
@@ -247,6 +286,8 @@
 <script>
 const landingDate = new Date("2025-12-19T12:30:00");
 const lastMeeting = new Date("2025-11-02T09:00:00");
+const swapsStart = new Date("2025-09-01T00:00:00");
+const swapsEnd = new Date("2026-02-06T00:00:00");
 let resetCountup = false;
 let countdownFinished = false;
 
@@ -292,6 +333,31 @@ function updateClocks() {
 
     document.getElementById("countup").textContent =
         upDays + " ימים, " + upHours + " שעות, " + upMinutes + " דקות, " + upSeconds + " שניות";
+
+    const totalSwapsTime = swapsEnd - swapsStart;
+    let elapsedSwaps = now - swapsStart;
+
+    if (elapsedSwaps < 0) {
+        elapsedSwaps = 0;
+    }
+    if (elapsedSwaps > totalSwapsTime) {
+        elapsedSwaps = totalSwapsTime;
+    }
+
+    let swapsPercent = 0;
+    if (totalSwapsTime > 0) {
+        swapsPercent = (elapsedSwaps / totalSwapsTime) * 100;
+    }
+
+    const swapsFill = document.getElementById("swapsProgressFill");
+    const swapsText = document.getElementById("swapsProgressText");
+
+    if (swapsFill) {
+        swapsFill.style.width = swapsPercent.toFixed(1) + "%";
+    }
+    if (swapsText) {
+        swapsText.textContent = "עברנו " + swapsPercent.toFixed(1) + "% מתקופת החילופים";
+    }
 }
 
 function revealFlight() {
